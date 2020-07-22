@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>To-do List</title>
+	<link rel="stylesheet" type="text/css" href="do-list-css.css">
+	<link href="https://fonts.googleapis.com/css2?family=Lexend+Zetta&display=swap" rel="stylesheet">
+</head>
+<body>
+	<div id="container">
+		<h1>MY TO-DO LIST</h1>
+    <header>
+      <input type="text" placeholder="Enter an activity..." id="item" onkeypress="handle(event)"/>
+      <span onclick="newItem()" class="addbtn">Add</span>
+    </header>
+    <ul id="myList">
+  <li>Hit the gym</li>
+  <li class="checked">Pay bills</li>
+  <li>Meet George</li>
+  <li>Buy eggs</li>
+  <li>Read a book</li>
+  <li>Organize office</li>
+</ul>
+  </div>
+<!-- js start -->
+<script type="text/javascript" src="do-list-js.js"></script>
+<script src="https://kit.fontawesome.com/292b55ca94.js" crossorigin="anonymous"></script>
+</body>
+</html>
