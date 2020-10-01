@@ -1,67 +1,181 @@
-function handle(e){
-        if(e.keyCode === 13){
-            e.preventDefault(); // Ensure it is only this code that rusn
+const todoList = {
+	todos: [],
 
-            newItem();}}
+	addTodo: function (todoText) {
+		this.todos.push({
+			todoText: todoText,
+			completed: false,
+		});
+		view.displayTodos();
+	},
 
-// Create a "close" button and append it to each list item
-var myNodelist = document.getElementsByTagName("LI");
-var i;
-for (i = 0; i < myNodelist.length; i++) {
-  var span1 = document.createElement("SPAN");
-  var txt1 = document.createTextNode("\u00D7");
-  span1.className = "close";
-  span1.appendChild(txt1);
-  myNodelist[i].appendChild(span1);
-}            
+	changeTodo: function (position, newTodoText) {
+		this.todos[position].todoText = newTodoText;
+		view.displayTodos();
+	},
 
-// Add a "checked" symbol when clicking on a list item
-var list = document.querySelector('ul');
-list.addEventListener('click', function(ev) {
-  if (ev.target.tagName === 'LI') {
-    ev.target.classList.toggle('checked');
-  }
-}, false);
+	deleteTodo: function (position) {
+		this.todos.splice(position, 1);
+		view.displayTodos();
+	},
 
-/// Click on a close button to hide the current list item
-var close = document.getElementsByClassName("close");
-var i;
-for (i = 0; i < close.length; i++) {
-  close[i].onclick = function() {
-    var div = this.parentElement;
-    div.style.display = "none";
-  }
-}
+	toggleCompleted: function (position) {
+		let todo = this.todos[position];
+		todo.completed = !todo.completed;
+	},
 
+	toggleAll: function () {
+		const allTodos = this.todos.length;
+		let completedTodos = 0;
 
-// Create a new list item when clicking on the "Add" button
-function newItem() {
-  var li = document.createElement("li");
-  var inputValue = document.getElementById("item").value;
-  var t = document.createTextNode(inputValue);
-  li.appendChild(t);
-  if (inputValue === '') {
-    alert("You must write something!");
-  } else {
-    document.getElementById("myList").appendChild(li);
-  }
-  document.getElementById("item").value = "";
+		for (let i = 0; i < allTodos; i++) {
+			if (this.todos[i].completed === true) {
+				completedTodos++;
+			}
+		}
 
-  var span1 = document.createElement("SPAN");
-  var txt1 = document.createTextNode("\u00D7");
-  var span2=document.createElement("SPAN");
-  var txt2=document.createTextNode("\u270E");
-  span2.className="edit";
-  span1.className = "close";
-  span1.appendChild(txt1);
-  span2.appendChild(txt2);
-  myNodelist[i].appendChild(span1);
-  myNodelist[i].appendChild(span2);
+		if (completedTodos === allTodos) {
+			for (let i = 0; i < allTodos; i++) {
+				this.todos[i].completed = false;
+			}
+		} else {
+			for (let i = 0; i < allTodos; i++) {
+				this.todos[i].completed = true;
+			}
+		}
 
-  for (i = 0; i < close.length; i++) {
-    close[i].onclick = function() {
-      var div = this.parentElement;
-      div.style.display = "none";
-    }
-  }
-}
+		view.displayTodos();
+	},
+};
+
+const handlers = {
+	toggleAll: function () {
+		todoList.toggleAll();
+	},
+
+	addTodo: function (e) {
+		if (e.keyCode === 13) {
+			e.preventDefault(); // Ensure it is only this code that rusn
+			let todoTextInput = document.getElementById("todoTextInput");
+			todoList.addTodo(todoTextInput.value);
+			todoTextInput.value = "";
+		}
+	},
+
+	deleteTodo: function (position) {
+		todoList.deleteTodo(position);
+	},
+};
+
+const view = {
+	displayTodos: function () {
+		let todosUl = document.getElementById("todoList");
+		todosUl.innerHTML = "";
+
+		for (let i = 0; i < todoList.todos.length; i++) {
+			let todoLi = document.createElement("li");
+			let todoLiText = document.createElement("input");
+			todoLiText.type = "text";
+			todoLiText.disabled = true;
+			todoLiText.id = "textInput";
+			let todoTextWithCompletion = todoList.todos[i].todoText;
+			let check = document.createElement("input");
+			check.type = "checkbox";
+			check.id = "checkbox";
+			check.className = "checkbox";
+			check.checked = "";
+
+			todoLi.id = i;
+			todoLiText.value = todoTextWithCompletion;
+			todoLi.appendChild(check);
+			todoLi.appendChild(todoLiText);
+			todoLi.appendChild(this.createDeleteButton());
+			todoLi.appendChild(this.createEditButton());
+			todosUl.appendChild(todoLi);
+
+			if (document.getElementById("checkbox").checked === true) {
+				todoList.toggleCompleted(i);
+			}
+			if (todoList.todos[i].completed === true) {
+				todoLiText.style.textDecoration = "line-through";
+			}
+		}
+	},
+
+	createDeleteButton: function () {
+		let deleteButton = document.createElement("img");
+		deleteButton.src = "delete.png";
+		deleteButton.className = "x";
+		return deleteButton;
+	},
+
+	createEditButton: function () {
+		let editButton = document.createElement("img");
+		editButton.src = "edit.png";
+		editButton.className = "edit";
+		return editButton;
+	},
+
+	setUpEventListeners: function () {
+		let todosUl = document.getElementById("todoList");
+
+		todosUl.addEventListener("click", (event) => {
+			let elementClicked = event.target;
+
+			if (elementClicked.className === "x") {
+				handlers.deleteTodo(parseInt(elementClicked.parentNode.id));
+			}
+		});
+
+		// Edit List Item
+		todosUl.addEventListener("click", (event) => {
+			let elementClicked = event.target;
+			let position = elementClicked.parentNode.id;
+
+			if (elementClicked.className === "edit") {
+				let input = document.getElementById(position).childNodes[1];
+
+				input.disabled = false;
+				input.className += " activeTextInput ";
+
+				input.focus();
+				input.select();
+
+				input.addEventListener("keyup", (event) => {
+					let elementClicked = event.target;
+
+					if (event.keyCode === 13) {
+						let textInput = input.value;
+						input.disabled = true;
+						input.classList.remove("activeTextInput");
+						todoList.changeTodo(position, textInput);
+					}
+				});
+			}
+		});
+
+		// Line through on check
+		todosUl.addEventListener("click", (event) => {
+			let elementClicked = event.target;
+			let position = elementClicked.parentNode.id;
+			let check = document.getElementById("checkbox");
+
+			if (elementClicked.className === "checkbox") {
+				todoList.toggleCompleted(position);
+				check.checked = true;
+			}
+		});
+
+		//Delete All
+		let clearAll = document.getElementById("clearAll");
+
+		clearAll.addEventListener("click", (event) => {
+			todoList.todos.splice(0, todoList.todos.length);
+			view.displayTodos();
+		});
+
+		// TODO Delete Selected
+	},
+};
+
+view.setUpEventListeners();

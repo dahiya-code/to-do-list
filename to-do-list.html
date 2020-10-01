@@ -1,29 +1,51 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>To-do List</title>
-	<link rel="stylesheet" type="text/css" href="do-list-css.css">
-	<link href="https://fonts.googleapis.com/css2?family=Lexend+Zetta&display=swap" rel="stylesheet">
-</head>
-<body>
-	<div id="container">
-		<h1>MY TO-DO LIST</h1>
-    <header>
-      <input type="text" placeholder="Enter an activity..." id="item" onkeypress="handle(event)"/>
-      <span onclick="newItem()" class="addbtn">Add</span>
-    </header>
-    <ul id="myList">
-  <li>Hit the gym</li>
-  <li class="checked">Pay bills</li>
-  <li>Meet George</li>
-  <li>Buy eggs</li>
-  <li>Read a book</li>
-  <li>Organize office</li>
-</ul>
-  </div>
-<!-- js start -->
-<script type="text/javascript" src="do-list-js.js"></script>
-<script src="https://kit.fontawesome.com/292b55ca94.js" crossorigin="anonymous"></script>
-</body>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="utf-8" />
+		<title>To do list</title>
+		<link rel="stylesheet" href="do-list-css.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<h1 class="text-center">TO DO LIST</h1>
+
+			<div class="row list-head">
+				<div class="col-md-12">
+					<input
+						type="text"
+						placeholder="Enter a List Item"
+						style="width: 100%"
+						id="todoTextInput"
+						onkeyup="handlers.addTodo(event)"
+					/>
+				</div>
+			</div>
+
+			<div class="row list-container">
+				<div class="col-md-12">
+					<ul id="todoList"></ul>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<button class="btn" style="width: 100%" id="clearAll">
+						Clear All
+					</button>
+					<button class="btn" style="width: 100%">
+						Clear Selected
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="do-list-js.js"></script>
+	</body>
 </html>
